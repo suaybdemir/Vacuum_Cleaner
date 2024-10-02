@@ -163,7 +163,7 @@ void MoveBackToOrigin(Item &cleaner)
     }
 }
 
-int main()
+int main(void)
 {
     Item* cleaner = Item::createItem(); 
     __UINT8_FAST_AXIS__ axis; 
