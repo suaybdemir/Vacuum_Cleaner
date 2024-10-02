@@ -5,7 +5,7 @@
     <h1 align="center">VACUUM CLEANER</h1>
 </p>
 <p align="center">
-    <em><code>❯ REPLACE-ME</code></em>
+    <em><code>❯ Home Goodness Sake</code></em>
 </p>
 <p align="center">
 	<img src="https://img.shields.io/github/license/suaybdemir/Vacuum_Cleaner?style=flat&logo=opensourceinitiative&logoColor=white&color=f1f1f1" alt="license">
@@ -41,7 +41,7 @@
 
 ##  Overview
 
-<code>❯ For Home Goodness Sake</code>
+<code>❯ Development of Vacuum Cleaner in order to home goodness sake!</code>
 
 ---
 
