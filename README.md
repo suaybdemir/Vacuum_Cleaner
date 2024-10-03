@@ -62,6 +62,11 @@ https://github.com/user-attachments/assets/4152db89-c9e2-43de-b79b-238ceb77e049
         ├── Makefile
         ├── main.cpp
         └── output.exe
+	    |
+	    RobotVacuum
+            ├── Dlls....
+            ├── main.cpp
+            └── cleaner_simulation.exe
 ```
 
 ---
