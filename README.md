@@ -43,16 +43,7 @@
 
 <code>❯ Development of Vacuum Cleaner in order to home goodness sake!</code>
 
-
-  <video width="600" controls>
-	  <center>
-    <source src="https://github.com/user-attachments/assets/4152db89-c9e2-43de-b79b-238ceb77e049" type="video/mp4">
-    </center>
-  </video>
-
-
-
-
+https://github.com/user-attachments/assets/4152db89-c9e2-43de-b79b-238ceb77e049
 
 ---
 
