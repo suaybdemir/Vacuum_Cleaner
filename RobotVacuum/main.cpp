@@ -5,6 +5,10 @@
 #include <cstdlib> 
 #include <ctime> 
 #include <vector>
+#include <queue>
+#include <cmath>
+#include <algorithm>
+
 
 using namespace std;
 
@@ -44,6 +48,20 @@ const uint8_t GRID_SIZE_Y = 20;
 
 bool garbageGrid[GRID_SIZE_X][GRID_SIZE_Y] = { false };
 bool obstacleGrid[GRID_SIZE_X][GRID_SIZE_Y] = { false };
+
+// A* için düğüm yapısı
+struct Node {
+    uint_fast8_t x, y;
+    int g, h; // g: hareket maliyeti, h: hedefe tahmini maliyet
+    Node* parent;
+    
+    Node(uint_fast8_t _x, uint_fast8_t _y, int _g, int _h, Node* _parent) 
+        : x(_x), y(_y), g(_g), h(_h), parent(_parent) {}
+    
+    int f() const { return g + h; }
+    
+    bool operator>(const Node& other) const { return f() > other.f(); }
+};
 
 void PlaceGarbage(int numGarbage)
 {
@@ -105,84 +123,91 @@ void PrintGrid(Item &cleaner)
     }
 }
 
-void Move(Item &cleaner, __UINT8_FAST_AXIS__ &axis, uint_fast8_t pixelNum) {
-    for (int bound = 0; bound < pixelNum; bound++) {
-
-        int nextX = cleaner.location.x;
-        int nextY = cleaner.location.y;
-
-        if (axis.moveX) {
-            nextX += (axis.movePositiveX ? 1 : -1);
-        }
-        if (axis.moveY) {
-            nextY += (axis.movePositiveY ? 1 : -1);
-        }
-
-        if (nextX < 0 || nextX >= GRID_SIZE_X || nextY < 0 || nextY >= GRID_SIZE_Y) {
-            continue; 
-        }
-
-
-        if(!obstacleGrid[nextX][nextY])
-        {
-            cleaner.location.x = nextX;
-            cleaner.location.y = nextY;
-        }
-
-        //Deficit Logic
-
-        PrintGrid(cleaner);
-        Wait(100);
-    }
+// Manhattan mesafesi hesaplama
+int Heuristic(__UINT8_FAST_LOCATION__ start, __UINT8_FAST_LOCATION__ end) {
+    return abs(start.x - end.x) + abs(start.y - end.y);
 }
 
+// A* algoritması ile yol bulma
+vector<__UINT8_FAST_LOCATION__> AStar(__UINT8_FAST_LOCATION__ start, __UINT8_FAST_LOCATION__ goal) {
+    priority_queue<Node, vector<Node>, greater<Node>> openList;
+    bool closedList[GRID_SIZE_X][GRID_SIZE_Y] = { false };
+    
+    openList.push(Node(start.x, start.y, 0, Heuristic(start, goal), nullptr));
 
+    vector<__UINT8_FAST_LOCATION__> path;
 
-void MoveBackToOrigin(Item &cleaner)
-{
-    while (cleaner.location.x > 0 || cleaner.location.y > 0)
-    {
-        if (cleaner.location.x > 0)
-        {
-            --cleaner.location.x;
+    while (!openList.empty()) {
+        Node current = openList.top();
+        openList.pop();
+        
+        if (current.x == goal.x && current.y == goal.y) {
+            Node* node = &current;
+            while (node != nullptr) {
+                path.push_back({node->x, node->y});
+                node = node->parent;
+            }
+            reverse(path.begin(), path.end());
+            return path;
         }
-        if (cleaner.location.y > 0)
-        {
-            --cleaner.location.y;
-        }
 
+        closedList[current.x][current.y] = true;
+
+        vector<pair<int, int>> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}; // Dikey ve yatay yönler
+
+        for (auto& dir : directions) {
+            int newX = current.x + dir.first;
+            int newY = current.y + dir.second;
+
+            if (newX >= 0 && newX < GRID_SIZE_X && newY >= 0 && newY < GRID_SIZE_Y && !closedList[newX][newY] && !obstacleGrid[newX][newY]) {
+                int newG = current.g + 1;
+                int newH = Heuristic({(uint_fast8_t)newX, (uint_fast8_t)newY}, goal);
+                openList.push(Node(newX, newY, newG, newH, new Node(current)));
+            }
+        }
+    }
+
+    return path; // Yol bulunamazsa boş bir liste döner
+}
+
+// A* algoritmasıyla bulunan yolu takip ederek hareket ettirme
+void FollowPath(Item& cleaner, vector<__UINT8_FAST_LOCATION__>& path) {
+    for (auto& step : path) {
+        cleaner.location.x = step.x;
+        cleaner.location.y = step.y;
         PrintGrid(cleaner);
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        Wait(100);
     }
 }
 
 int main(void)
 {
     Item* cleaner = Item::createItem(); 
-    __UINT8_FAST_AXIS__ axis; 
 
     int numGarbage = 30; 
     int numObstacles = 20; 
     PlaceGarbage(numGarbage);
     PlaceObstacle(numObstacles);
 
-    axis.moveX = true;
-    axis.movePositiveX = true;
-    axis.moveY = false; 
-    Move(*cleaner, axis, 10);
+    // Temizleyiciyi çöplere yönlendir ve her çöp için A* ile yol bul
+    for (int x = 0; x < GRID_SIZE_X; x++) {
+        for (int y = 0; y < GRID_SIZE_Y; y++) {
+            if (garbageGrid[x][y]) {
+                __UINT8_FAST_LOCATION__ garbageLocation = { (uint_fast8_t)x, (uint_fast8_t)y };
+                vector<__UINT8_FAST_LOCATION__> path = AStar(cleaner->location, garbageLocation);
+                if (!path.empty()) {
+                    FollowPath(*cleaner, path);
+                }
+            }
+        }
+    }
 
-    axis.moveX = false; 
-    axis.moveY = true;
-    axis.movePositiveY = true;
-    Move(*cleaner, axis, 12);
-
-    axis.moveX = true;
-    axis.movePositiveX = false; 
-    axis.moveY = true;
-    axis.movePositiveY = false; 
-    Move(*cleaner, axis, 10);
-
-    MoveBackToOrigin(*cleaner);
+    // Geri başlangıç noktasına dön
+    __UINT8_FAST_LOCATION__ origin = {0, 0};
+    vector<__UINT8_FAST_LOCATION__> returnPath = AStar(cleaner->location, origin);
+    if (!returnPath.empty()) {
+        FollowPath(*cleaner, returnPath);
+    }
 
     cout << "\nReturned to the Beginning -> X: " << static_cast<int>(cleaner->location.x) << " Y: " << static_cast<int>(cleaner->location.y) << endl;
 
