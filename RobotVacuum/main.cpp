@@ -48,10 +48,9 @@ const uint8_t GRID_SIZE_Y = 20;
 bool garbageGrid[GRID_SIZE_X][GRID_SIZE_Y] = { false };
 bool obstacleGrid[GRID_SIZE_X][GRID_SIZE_Y] = { false };
 
-// A* için düğüm yapısı
 struct Node {
     uint_fast8_t x, y;
-    int g, h; // g: hareket maliyeti, h: hedefe tahmini maliyet
+    int g, h; 
     Node* parent;
     
     Node(uint_fast8_t _x, uint_fast8_t _y, int _g, int _h, Node* _parent) 
@@ -122,12 +121,10 @@ void PrintGrid(Item &cleaner)
     }
 }
 
-// Manhattan mesafesi hesaplama
 int Heuristic(__UINT8_FAST_LOCATION__ start, __UINT8_FAST_LOCATION__ end) {
     return abs(start.x - end.x) + abs(start.y - end.y);
 }
 
-// A* algoritması ile yol bulma
 vector<__UINT8_FAST_LOCATION__> AStar(__UINT8_FAST_LOCATION__ start, __UINT8_FAST_LOCATION__ goal) {
     priority_queue<Node, vector<Node>, greater<Node>> openList;
     bool closedList[GRID_SIZE_X][GRID_SIZE_Y] = { false };
@@ -166,10 +163,9 @@ vector<__UINT8_FAST_LOCATION__> AStar(__UINT8_FAST_LOCATION__ start, __UINT8_FAS
         }
     }
 
-    return path; // Yol bulunamazsa boş bir liste döner
+    return path; 
 }
 
-// A* algoritmasıyla bulunan yolu takip ederek hareket ettirme
 void FollowPath(Item& cleaner, vector<__UINT8_FAST_LOCATION__>& path) {
     for (auto& step : path) {
         cleaner.location.x = step.x;
@@ -188,7 +184,6 @@ int main(void)
     PlaceGarbage(numGarbage);
     PlaceObstacle(numObstacles);
 
-    // Temizleyiciyi çöplere yönlendir ve her çöp için A* ile yol bul
     for (int x = 0; x < GRID_SIZE_X; x++) {
         for (int y = 0; y < GRID_SIZE_Y; y++) {
             if (garbageGrid[x][y]) {
