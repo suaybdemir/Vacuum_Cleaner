@@ -18,15 +18,6 @@ struct __UINT8_FAST_LOCATION__
     uint_fast8_t y;
 };
 
-struct __UINT8_FAST_AXIS__
-{
-    bool moveX; 
-    bool moveY; 
-    bool movePositiveX; // Direction: true = positive, false = negative
-    bool movePositiveY; // Direction: true = positive, false = negative
-};
-
-__UINT8_FAST_AXIS__ axis = {false, false, false, false};
 
 class Item {
 public:
@@ -123,14 +114,15 @@ void PrintGrid(Item &cleaner)
     }
 }
 
-// Manhattan mesafesi hesaplama
 int Heuristic(__UINT8_FAST_LOCATION__ start, __UINT8_FAST_LOCATION__ end) {
     return abs(start.x - end.x) + abs(start.y - end.y);
 }
 
 // A* algoritması ile yol bulma
 vector<__UINT8_FAST_LOCATION__> AStar(__UINT8_FAST_LOCATION__ start, __UINT8_FAST_LOCATION__ goal) {
+
     priority_queue<Node, vector<Node>, greater<Node>> openList;
+    
     bool closedList[GRID_SIZE_X][GRID_SIZE_Y] = { false };
     
     openList.push(Node(start.x, start.y, 0, Heuristic(start, goal), nullptr));
@@ -176,7 +168,7 @@ void FollowPath(Item& cleaner, vector<__UINT8_FAST_LOCATION__>& path) {
         cleaner.location.x = step.x;
         cleaner.location.y = step.y;
         PrintGrid(cleaner);
-        Wait(100);
+        Wait(75);//FPS
     }
 }
 
