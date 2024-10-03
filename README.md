@@ -43,6 +43,8 @@
 
 <code>❯ Development of Vacuum Cleaner in order to home goodness sake!</code>
 
+https://github.com/user-attachments/assets/4152db89-c9e2-43de-b79b-238ceb77e049
+
 ---
 
 ##  Features
@@ -94,12 +96,12 @@ Build the project from source:
 
 2. Navigate to the project directory:
 ```sh
-❯ cd Vacuum_Cleaner
+❯ cd Vacuum_Cleaner/SimulationSFML
 ```
-
+ 
 3. Install the required dependencies:
 ```sh
-❯ g++ -o output main.cpp
+❯ g++ -IC:/Users?/?/Desktop?/Vacuum_Cleaner/RobotVacuum/SimulationSFML/SFML/include -LC:/Users?/?/Desktop?/Vacuum_Cleaner/RobotVacuum/SimulationSFML/SFML/lib -o cleaner_simulation main.cpp -lsfml-graphics -lsfml-window -lsfml-system
 ```
 
 ###  Usage
@@ -107,7 +109,7 @@ Build the project from source:
 To run the project, execute the following command:
 
 ```sh
-❯ ./output
+❯ ./cleaner_simulation
 ```
 
 
