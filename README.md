@@ -77,8 +77,10 @@ https://github.com/user-attachments/assets/4152db89-c9e2-43de-b79b-238ceb77e049
 
 | File | Summary |
 | --- | --- |
-| [main.cpp](https://github.com/suaybdemir/Vacuum_Cleaner/blob/main/RobotVacuum/main.cpp) | <code>❯ main</code> |
+| [main.cpp](https://github.com/suaybdemir/Vacuum_Cleaner/blob/main/RobotVacuum/main.cpp) | <code>❯ main CPP</code> |
+| [main.cpp](https://github.com/suaybdemir/Vacuum_Cleaner/blob/main/RobotVacuum/SimulationSFML/main.cpp) | <code>❯ main Simulation CPP</code> |
 | [Makefile](https://github.com/suaybdemir/Vacuum_Cleaner/blob/main/RobotVacuum/Makefile) | <code>❯ Makefile</code> |
+| [SFML Simulation](https://github.com/suaybdemir/Vacuum_Cleaner/tree/main/RobotVacuum/SimulationSFML/cleaner_simulation.exe) | <code>❯ SFML Simulation exe</code> |
 
 </details>
 
