@@ -46,7 +46,7 @@
 
   <video width="600" controls>
 	  <center>
-    <source src="[video_link.mp4](https://github.com/user-attachments/assets/4152db89-c9e2-43de-b79b-238ceb77e049)" type="video/mp4">
+    <source src="https://github.com/user-attachments/assets/4152db89-c9e2-43de-b79b-238ceb77e049" type="video/mp4">
     </center>
   </video>
 
