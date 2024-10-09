@@ -118,13 +118,12 @@ int Heuristic(__UINT8_FAST_LOCATION__ start, __UINT8_FAST_LOCATION__ end) {
     return abs(start.x - end.x) + abs(start.y - end.y);
 }
 
-// A* algoritması ile yol bulma
 vector<__UINT8_FAST_LOCATION__> AStar(__UINT8_FAST_LOCATION__ start, __UINT8_FAST_LOCATION__ goal) {
 
     priority_queue<Node, vector<Node>, greater<Node>> openList;
-    
+
     bool closedList[GRID_SIZE_X][GRID_SIZE_Y] = { false };
-    
+
     openList.push(Node(start.x, start.y, 0, Heuristic(start, goal), nullptr));
 
     vector<__UINT8_FAST_LOCATION__> path;
@@ -132,7 +131,8 @@ vector<__UINT8_FAST_LOCATION__> AStar(__UINT8_FAST_LOCATION__ start, __UINT8_FAS
     while (!openList.empty()) {
         Node current = openList.top();
         openList.pop();
-        
+
+        // Hedefe ulaşıldıysa yol oluşturuluyor
         if (current.x == goal.x && current.y == goal.y) {
             Node* node = &current;
             while (node != nullptr) {
@@ -143,24 +143,33 @@ vector<__UINT8_FAST_LOCATION__> AStar(__UINT8_FAST_LOCATION__ start, __UINT8_FAS
             return path;
         }
 
+        // Şu anki düğüm kapalı listeye ekleniyor
         closedList[current.x][current.y] = true;
 
-        vector<pair<int, int>> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}; // Dikey ve yatay yönler
+        // 8 yönlü hareket: sağ, sol, yukarı, aşağı ve çapraz yönler
+        vector<pair<int, int>> directions = {
+            {1, 0}, {-1, 0}, {0, 1}, {0, -1},   // Dikey ve yatay
+            {1, 1}, {1, -1}, {-1, 1}, {-1, -1}  // Çapraz
+        };
 
+        // Komşu düğümler kontrol ediliyor
         for (auto& dir : directions) {
             int newX = current.x + dir.first;
             int newY = current.y + dir.second;
 
+            // Yeni pozisyonun geçerli olup olmadığını kontrol ediyoruz
             if (newX >= 0 && newX < GRID_SIZE_X && newY >= 0 && newY < GRID_SIZE_Y && !closedList[newX][newY] && !obstacleGrid[newX][newY]) {
-                int newG = current.g + 1;
+                int newG = current.g + ((dir.first != 0 && dir.second != 0) ? 14 : 10); // Dikey ve yatay için 10, çapraz için 14 (yaklaşık kök 2)
                 int newH = Heuristic({(uint_fast8_t)newX, (uint_fast8_t)newY}, goal);
                 openList.push(Node(newX, newY, newG, newH, new Node(current)));
             }
         }
     }
 
-    return path; // Yol bulunamazsa boş bir liste döner
+    // Eğer yol bulunamazsa boş bir liste döner
+    return path;
 }
+
 
 // A* algoritmasıyla bulunan yolu takip ederek hareket ettirme
 void FollowPath(Item& cleaner, vector<__UINT8_FAST_LOCATION__>& path) {
