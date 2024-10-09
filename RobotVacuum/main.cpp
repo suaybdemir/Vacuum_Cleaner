@@ -143,13 +143,11 @@ vector<__UINT8_FAST_LOCATION__> AStar(__UINT8_FAST_LOCATION__ start, __UINT8_FAS
             return path;
         }
 
-        // Şu anki düğüm kapalı listeye ekleniyor
         closedList[current.x][current.y] = true;
 
-        // 8 yönlü hareket: sağ, sol, yukarı, aşağı ve çapraz yönler
         vector<pair<int, int>> directions = {
-            {1, 0}, {-1, 0}, {0, 1}, {0, -1},   // Dikey ve yatay
-            {1, 1}, {1, -1}, {-1, 1}, {-1, -1}  // Çapraz
+            {1, 0}, {-1, 0}, {0, 1}, {0, -1},   
+            {1, 1}, {1, -1}, {-1, 1}, {-1, -1}  
         };
 
         // Komşu düğümler kontrol ediliyor
@@ -177,12 +175,13 @@ void FollowPath(Item& cleaner, vector<__UINT8_FAST_LOCATION__>& path) {
         cleaner.location.x = step.x;
         cleaner.location.y = step.y;
         PrintGrid(cleaner);
-        Wait(75);//FPS
+        Wait(50);//FPS
     }
 }
 
 int main(void)
 {
+    std::cout << "\033[35m\033[43m";
     Item* cleaner = Item::createItem(); 
 
     int numGarbage = 30; 
@@ -203,7 +202,6 @@ int main(void)
         }
     }
 
-    // Geri başlangıç noktasına dön
     __UINT8_FAST_LOCATION__ origin = {0, 0};
     vector<__UINT8_FAST_LOCATION__> returnPath = AStar(cleaner->location, origin);
     if (!returnPath.empty()) {
@@ -211,7 +209,7 @@ int main(void)
     }
 
     cout << "\nReturned to the Beginning -> X: " << static_cast<int>(cleaner->location.x) << " Y: " << static_cast<int>(cleaner->location.y) << endl;
-
+    std::cout << "\033[0m";
     delete cleaner; 
     return 0;
 }
